@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,5 +33,21 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    // Tratamento específico para BadCredentialsException
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException(BadCredentialsException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "E-mail ou senha incorretos!");
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    // Tratar usuários desativados (DisabledException)
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Map<String, String>> handleDisabledException(DisabledException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", "Usuário não está ativo. Por favor, entre em contato com o suporte.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }

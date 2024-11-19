@@ -1,11 +1,8 @@
 package com.api.stackoverflow_backend.controllers;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.stackoverflow_backend.dtos.AuthenticationRequest;
 import com.api.stackoverflow_backend.dtos.AuthenticationResponse;
 import com.api.stackoverflow_backend.utils.JwtUtil;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class AuthenticationController {
@@ -33,14 +28,11 @@ public class AuthenticationController {
 
     // http://localhost:8080/authentication
     @PostMapping("/authentication")
-    public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) throws IOException {
+    public AuthenticationResponse createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("E-mail ou Senha incorreta!");
-        } catch (DisabledException disabledException) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Usuário não criado!");
-            return null;
+            throw new BadCredentialsException("E-mail ou senha incorretos!");
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
