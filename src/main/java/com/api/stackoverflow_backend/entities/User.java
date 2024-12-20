@@ -1,5 +1,7 @@
 package com.api.stackoverflow_backend.entities;
 
+import com.api.stackoverflow_backend.dtos.UserDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +32,13 @@ public class User {
     @NotNull(message = "A senha é obrigatória")
     @Size(min = 3, message = "A senha deve ter pelo menos 3 caracteres")
     private String password;
+
+    public UserDTO getUserDto() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(id);
+        userDTO.setName(name);
+        userDTO.setEmail(email);
+        return userDTO;
+    }
 
 }

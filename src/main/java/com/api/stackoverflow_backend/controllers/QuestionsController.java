@@ -13,7 +13,7 @@ import com.api.stackoverflow_backend.services.questions.QuestionsService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/api")
 public class QuestionsController {
 
     private final QuestionsService questionsService;
@@ -23,12 +23,10 @@ public class QuestionsController {
         this.questionsService = questionsService;
     }
 
-    @PostMapping
+    @PostMapping("/question")
     public ResponseEntity<?> postQuestion(@Valid @RequestBody QuestionsDTO questionsDTO) {
+        System.out.println("Dados recebidos: " + questionsDTO);
         QuestionsDTO createdQuestionDto = questionsService.addQuestion(questionsDTO);
-        if (createdQuestionDto == null) {
-            return new ResponseEntity<>("Algo deu errado", HttpStatus.BAD_REQUEST);
-        }
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestionDto);
     }
 

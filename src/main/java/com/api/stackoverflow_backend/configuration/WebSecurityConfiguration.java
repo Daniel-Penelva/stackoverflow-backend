@@ -32,7 +32,9 @@ public class WebSecurityConfiguration {
         return security.csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/authentication", "/sign-up").permitAll() // Permite acesso público ao endpoint de registro
-                .anyRequest().authenticated()            // Protege todas as outras rotas
+                .and()
+                .authorizeHttpRequests()
+                .requestMatchers("/api/**").authenticated()            // Protege todas as outras rotas
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

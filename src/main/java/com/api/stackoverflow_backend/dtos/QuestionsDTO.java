@@ -1,5 +1,6 @@
 package com.api.stackoverflow_backend.dtos;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -12,5 +13,6 @@ public class QuestionsDTO {
     private String body;
     private List<String> tags;
     private Long userId;
+    private Date createdDate;
 
 }
