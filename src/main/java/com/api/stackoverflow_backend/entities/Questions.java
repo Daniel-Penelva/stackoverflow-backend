@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -50,4 +51,16 @@ public class Questions {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User user;
+
+    public QuestionsDTO getQuestionDto() {
+        QuestionsDTO questionsDTO = new QuestionsDTO();
+        questionsDTO.setId(id);
+        questionsDTO.setTitle(title);
+        questionsDTO.setBody(body);
+        questionsDTO.setTags(tags);
+        questionsDTO.setUserId(user.getId());
+        questionsDTO.setUsername(user.getName());
+
+        return questionsDTO;
+    }
 }

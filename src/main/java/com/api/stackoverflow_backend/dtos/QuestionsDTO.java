@@ -14,5 +14,6 @@ public class QuestionsDTO {
     private List<String> tags;
     private Long userId;
     private Date createdDate;
+    private String username;   // para capturar o nome do usuário
 
 }
