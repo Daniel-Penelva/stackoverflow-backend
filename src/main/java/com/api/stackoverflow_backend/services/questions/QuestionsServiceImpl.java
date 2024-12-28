@@ -75,6 +75,7 @@ public class QuestionsServiceImpl implements QuestionsService{
         questionsDTO.setTags(question.getTags());
         questionsDTO.setCreatedDate(question.getCreatedDate());
         questionsDTO.setUserId(question.getUser().getId());
+        questionsDTO.setUsername(question.getUser().getName()); // Adiciona o nome do usuário
         return questionsDTO;
     }
 

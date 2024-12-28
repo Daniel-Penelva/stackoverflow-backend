@@ -58,6 +58,7 @@ public class Questions {
         questionsDTO.setTitle(title);
         questionsDTO.setBody(body);
         questionsDTO.setTags(tags);
+        questionsDTO.setCreatedDate(createdDate);
         questionsDTO.setUserId(user.getId());
         questionsDTO.setUsername(user.getName());
 
