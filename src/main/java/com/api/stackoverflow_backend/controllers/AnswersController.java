@@ -24,12 +24,9 @@ public class AnswersController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addAnswer(@Valid @RequestBody AnswersDTO answersDTO) {
+    public ResponseEntity<AnswersDTO> addAnswer(@Valid @RequestBody AnswersDTO answersDTO) {
         AnswersDTO createAnswersDTO = answersService.postAnswer(answersDTO);
-        if (createAnswersDTO == null) {
-            return new ResponseEntity<>("Algo deu errado", HttpStatus.BAD_REQUEST);
-        }
         return ResponseEntity.status(HttpStatus.CREATED).body(createAnswersDTO);
     }
-    
+
 }

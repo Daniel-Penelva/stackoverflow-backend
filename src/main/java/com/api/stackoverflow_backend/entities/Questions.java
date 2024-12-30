@@ -41,8 +41,10 @@ public class Questions {
     @NotNull(message = "O corpo de texto é obrigatório")
     private String body;
     
+    @NotNull(message = "A data de criação da resposta não pode estar vazia")
     private Date createdDate;
 
+    @NotNull(message = "As tags não podem estar vazias")
     private List<String> tags;
 
     // Muitas perguntas são feitas por um único usuário

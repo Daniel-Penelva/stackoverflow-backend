@@ -33,9 +33,6 @@ public class QuestionsServiceImpl implements QuestionsService{
     @Override
     public QuestionsDTO addQuestion(QuestionsDTO questionsDTO) {
 
-        // Validação de entrada
-        validateQuestionDTO(questionsDTO);
-
         // Buscar o usuário ou lança exceção
         User user = userRepository.findById(questionsDTO.getUserId()).orElseThrow(
             () -> new UserNotFoundException("Usuário não encontrado para o ID: " + questionsDTO.getUserId()));
@@ -51,19 +48,6 @@ public class QuestionsServiceImpl implements QuestionsService{
         // Salva e converte em DTO
         Questions createdQuestions = questionsRepository.save(question);
         return mapToDTO(createdQuestions);
-    }
-
-    // Método de validações ao criar a pergunta
-    private void validateQuestionDTO(QuestionsDTO questionsDTO) {
-        if (questionsDTO.getTitle() == null || questionsDTO.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("O título não pode estar vazio");
-        } if (questionsDTO.getBody() == null || questionsDTO.getBody().isEmpty()) {
-            throw new IllegalArgumentException("O corpo da pergunta não pode estar vazio");
-        } if (questionsDTO.getTags() == null || questionsDTO.getTags().isEmpty()) {
-            throw new IllegalArgumentException("As tags não podem estar vazias");
-        } if (questionsDTO.getUserId() == null) {
-            throw new IllegalArgumentException("O ID do usuário não pode ser nulo.");
-        }
     }
 
     // Mapper - método para converter em DTO 

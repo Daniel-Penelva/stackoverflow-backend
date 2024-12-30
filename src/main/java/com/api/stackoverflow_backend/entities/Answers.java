@@ -30,6 +30,7 @@ public class Answers {
     @NotNull(message = "O corpo de texto é obrigatório")
     private String body;
 
+    @NotNull(message = "A data de criação da resposta não pode estar vazia")
     private Date createdDate;
 
     // Muitas respostas são feitas por um único usuário

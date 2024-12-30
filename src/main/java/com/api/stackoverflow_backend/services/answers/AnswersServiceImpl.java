@@ -1,7 +1,6 @@
 package com.api.stackoverflow_backend.services.answers;
 
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +8,8 @@ import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.api.stackoverflow_backend.entities.Answers;
 import com.api.stackoverflow_backend.entities.Questions;
 import com.api.stackoverflow_backend.entities.User;
+import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
+import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 import com.api.stackoverflow_backend.repository.AnswersRepository;
 import com.api.stackoverflow_backend.repository.QuestionsRepository;
 import com.api.stackoverflow_backend.repository.UserRepository;
@@ -31,24 +32,34 @@ public class AnswersServiceImpl implements AnswersService {
     @Override
     public AnswersDTO postAnswer(AnswersDTO answersDTO) {
 
-        Optional<User> optionalUser = userRepository.findById(answersDTO.getUserId());
-        Optional<Questions> optionalQuestion = questionsRepository.findById(answersDTO.getQuestionId());
-        
-        if (optionalUser.isPresent() && optionalQuestion.isPresent()) {
-            Answers answer = new Answers();
-            answer.setBody(answersDTO.getBody());
-            answer.setCreatedDate(new Date());
-            answer.setUser(optionalUser.get());
-            answer.setQuestions(optionalQuestion.get());
+        // Buscam o usuário e a pergunta (question) ou lança exceção
+        User user = userRepository.findById(answersDTO.getUserId()).orElseThrow(() -> new UserNotFoundException(
+                "Usuário não encontrado para o ID: " + answersDTO.getUserId()));
 
-            Answers createdAnswer = answersRepository.save(answer);
+        Questions question = questionsRepository.findById(answersDTO.getQuestionId())
+                .orElseThrow(() -> new QuestionNotFoundException("Pergunta não encontrada para o ID: " + answersDTO.getQuestionId()));
 
-            AnswersDTO createdAdAnswersDTO = new AnswersDTO();
-            createdAdAnswersDTO.setId(createdAnswer.getId());
+        // Cria a entidade
+        Answers answer = new Answers();
+        answer.setBody(answersDTO.getBody());
+        answer.setCreatedDate(new Date());
+        answer.setUser(user);
+        answer.setQuestions(question);
 
-            return createdAdAnswersDTO;
-        }
-        return null;
+        // Salva e converte em DTO
+        Answers createdAnswer = answersRepository.save(answer);
+        return mapToDTO(createdAnswer);
     }
-    
+
+    // Mapper - método para converter em DTO
+    private AnswersDTO mapToDTO(Answers answer) {
+        AnswersDTO answersDTO = new AnswersDTO();
+        answersDTO.setId(answer.getId());
+        answersDTO.setBody(answer.getBody());
+        answersDTO.setCreatedDate(answer.getCreatedDate());
+        answersDTO.setUserId(answer.getUser().getId());
+        answersDTO.setQuestionId(answer.getQuestions().getId());
+        return answersDTO;
+    }
+
 }

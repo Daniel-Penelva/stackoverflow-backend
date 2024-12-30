@@ -1,11 +1,14 @@
 package com.api.stackoverflow_backend.dtos;
 
+import java.util.Date;
+
 public class AnswersDTO {
     
     private Long id;
     private String body;
     private Long userId;
     private Long questionId;
+    private Date createdDate;
 
     // Getters e Setters
     public Long getId() {
@@ -31,6 +34,12 @@ public class AnswersDTO {
     }
     public void setQuestionId(Long questionId) {
         this.questionId = questionId;
+    }
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
 }
