@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
+import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
 import com.api.stackoverflow_backend.services.questions.QuestionsService;
 
 import jakarta.validation.Valid;
@@ -37,6 +38,12 @@ public class QuestionsController {
     public ResponseEntity<AllQuestionResponseDto> getAllQuestions(@PathVariable int pageNumber) {
         AllQuestionResponseDto allQuestionResponseDto = questionsService.getAllQuestions(pageNumber);
         return ResponseEntity.ok(allQuestionResponseDto);
+    }
+
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<SingleQuestionDto> getQuestionById(@PathVariable Long questionId) {
+        SingleQuestionDto singleQuestionDto = questionsService.getQuestionById(questionId);
+        return ResponseEntity.ok(singleQuestionDto);
     }
 
 }
