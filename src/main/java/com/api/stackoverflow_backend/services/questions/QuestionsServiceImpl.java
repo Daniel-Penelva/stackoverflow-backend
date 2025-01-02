@@ -81,14 +81,15 @@ public class QuestionsServiceImpl implements QuestionsService{
     @Override
     public SingleQuestionDto getQuestionById(Long questionId) {
 
-    /* O exemplo abaixo é uma forma de fazer a busca por ID, mas não é a melhor forma.
+    /*
+        //O exemplo abaixo é uma forma de fazer a busca por ID, mas não é a melhor forma.
         Optional<Questions> optionalQuestion = questionsRepository.findById(questionId);
         
         SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
         optionalQuestion.ifPresent(question -> singleQuestionDto.setQuestionsDTO(question.getQuestionDto()));
 
-        return singleQuestionDto;
-    */ 
+        return singleQuestionDto; 
+    */
 
         Questions question = questionsRepository.findById(questionId).orElseThrow(
             () -> new QuestionNotFoundException("Pergunta não encontrada para o ID: " + questionId));
@@ -96,9 +97,20 @@ public class QuestionsServiceImpl implements QuestionsService{
         return mapToSingleQuestionDto(question);
     }
 
+    
     private SingleQuestionDto mapToSingleQuestionDto(Questions question) {
+        QuestionsDTO questionsDTO = new QuestionsDTO();
         SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
-        singleQuestionDto.setQuestionsDTO(mapToDTO(question));           // Aqui, posso avaliar o uso direto de question.getQuestionDto() no lugar de mapToDTO, caso o método getQuestionDto na entidade Questions já cubra todas as necessidades.
+
+        questionsDTO.setId(question.getId());
+        questionsDTO.setTitle(question.getTitle());
+        questionsDTO.setBody(question.getBody());
+        questionsDTO.setTags(question.getTags());
+        questionsDTO.setCreatedDate(question.getCreatedDate());
+        questionsDTO.setUserId(question.getUser().getId());
+        questionsDTO.setUsername(question.getUser().getName());
+
+        singleQuestionDto.setQuestionsDTO(question.getQuestionDto());
         return singleQuestionDto;
     }
 
