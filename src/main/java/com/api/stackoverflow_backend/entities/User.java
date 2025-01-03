@@ -2,6 +2,7 @@ package com.api.stackoverflow_backend.entities;
 
 import com.api.stackoverflow_backend.dtos.UserDTO;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class User {
 
     @NotNull(message = "O nome é obrigatório")
     @Email(message = "O e-mail deve ser válido")
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotNull(message = "A senha é obrigatória")
