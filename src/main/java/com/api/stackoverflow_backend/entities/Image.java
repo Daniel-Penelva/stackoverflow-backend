@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,13 +26,14 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "O nome é obrigatório")
-    @Size(min = 3, max = 50, message = "O nome deve ter entre 3 e 50 caracteres")
+    @NotNull(message = "O nome da imagem é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome da imagem deve ter entre 3 e 100 caracteres")
     private String name;
 
     private String type;
 
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] data;
 
     // Muitas imagens são feitas por uma única resposta

@@ -1,5 +1,9 @@
 package com.api.stackoverflow_backend.controllers;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,30 +14,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.api.stackoverflow_backend.services.user.image.ImageService;
-
-import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ImageController {
 
     private final ImageService imageService;
 
-    // Construtor com injeção de dependência
-    public ImageController(ImageService imageService) {
-        this.imageService = imageService;
-    }
-
     @PostMapping("/image/{answerId}")
-    public ResponseEntity<String> uploadFile(@Valid @RequestParam MultipartFile multipartFile, @PathVariable Long answerId) {
-
-        try {
-            imageService.storeFile(multipartFile, answerId);
-            return ResponseEntity.ok("Imagem salva com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar imagem!" + e.getMessage());
-        }
-
+    public ResponseEntity<Map<String, String>> uploadImage(@PathVariable Long answerId, @RequestParam("multipartFile") MultipartFile multipartFile) {
+    Map<String, String> response = new HashMap<>();
+    try {
+        String message = imageService.saveImage(answerId, multipartFile);
+        response.put("message", message);
+        return ResponseEntity.ok(response);
+    } catch (IOException e) {
+        response.put("error", "Erro ao salvar a imagem: " + e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
-
+}
 }
