@@ -1,5 +1,6 @@
 package com.api.stackoverflow_backend.controllers;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +14,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.api.stackoverflow_backend.exceptions.EmailAlreadyExistsException;
+import com.api.stackoverflow_backend.exceptions.ImageUploadException;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
 import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ImageUploadException.class)
+    public ResponseEntity<Map<String, String>> handleImageUploadException(ImageUploadException ex) {
+        return ResponseEntity.badRequest().body(Collections.singletonMap("error", ex.getMessage()));
+    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {

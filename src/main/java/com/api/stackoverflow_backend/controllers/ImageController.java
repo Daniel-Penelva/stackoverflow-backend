@@ -25,14 +25,8 @@ public class ImageController {
 
     @PostMapping("/image/{answerId}")
     public ResponseEntity<Map<String, String>> uploadImage(@PathVariable Long answerId, @RequestParam("multipartFile") MultipartFile multipartFile) {
-    Map<String, String> response = new HashMap<>();
-    try {
-        String message = imageService.saveImage(answerId, multipartFile);
-        response.put("message", message);
+        Map<String, String> response = imageService.saveImage(answerId, multipartFile);
         return ResponseEntity.ok(response);
-    } catch (IOException e) {
-        response.put("error", "Erro ao salvar a imagem: " + e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
+    
 }
 }
