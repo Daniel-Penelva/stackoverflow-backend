@@ -5,6 +5,7 @@ import java.util.Date;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -86,6 +87,18 @@ public class Answers {
 
     public void setQuestions(Questions questions) {
         this.questions = questions;
+    }
+
+    public AnswersDTO getAnswersDto() {
+        AnswersDTO answersDTO = new AnswersDTO();
+        answersDTO.setId(id);
+        answersDTO.setBody(body);
+        answersDTO.setUserId(user.getId());
+        answersDTO.setQuestionId(questions.getId());
+        answersDTO.setCreatedDate(createdDate);
+        answersDTO.setUsername(user.getName());
+
+        return answersDTO;
     }
 
 }

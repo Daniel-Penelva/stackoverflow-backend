@@ -1,6 +1,8 @@
 package com.api.stackoverflow_backend.services.questions;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -9,12 +11,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
+import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
+import com.api.stackoverflow_backend.entities.Answers;
 import com.api.stackoverflow_backend.entities.Questions;
 import com.api.stackoverflow_backend.entities.User;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
 import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
+import com.api.stackoverflow_backend.repository.AnswersRepository;
+import com.api.stackoverflow_backend.repository.ImageRepository;
 import com.api.stackoverflow_backend.repository.QuestionsRepository;
 import com.api.stackoverflow_backend.repository.UserRepository;
 
@@ -23,13 +29,17 @@ public class QuestionsServiceImpl implements QuestionsService{
 
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
+    private final AnswersRepository answersRepository;
+    private final ImageRepository imageRepository;
 
     public static final int SEARCH_RESULT_PER_PAGE = 5;
 
     //Construtor com injeção de dependência
-    public QuestionsServiceImpl(UserRepository userRepository, QuestionsRepository questionsRepository) {
+    public QuestionsServiceImpl(UserRepository userRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository, ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.questionsRepository = questionsRepository;
+        this.answersRepository = answersRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -99,6 +109,7 @@ public class QuestionsServiceImpl implements QuestionsService{
 
     
     private SingleQuestionDto mapToSingleQuestionDto(Questions question) {
+        
         QuestionsDTO questionsDTO = new QuestionsDTO();
         SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
 
@@ -111,6 +122,18 @@ public class QuestionsServiceImpl implements QuestionsService{
         questionsDTO.setUsername(question.getUser().getName());
 
         singleQuestionDto.setQuestionsDTO(question.getQuestionDto());
+
+        List<AnswersDTO> answersDtoList = new ArrayList<>();
+        List<Answers> answersList = answersRepository.findAllByQuestions_Id(question.getId());
+        
+        for(Answers answer : answersList) {
+            AnswersDTO answersDTO = answer.getAnswersDto();
+            answersDTO.setFile(imageRepository.findByAnswer(answer));
+            answersDtoList.add(answersDTO);
+        }
+
+        singleQuestionDto.setAnswersDTOList(answersDtoList);
+
         return singleQuestionDto;
     }
 

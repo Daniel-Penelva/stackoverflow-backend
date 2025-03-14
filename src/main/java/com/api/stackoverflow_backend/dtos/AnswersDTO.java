@@ -2,6 +2,8 @@ package com.api.stackoverflow_backend.dtos;
 
 import java.util.Date;
 
+import com.api.stackoverflow_backend.entities.Image;
+
 public class AnswersDTO {
     
     private Long id;
@@ -9,6 +11,8 @@ public class AnswersDTO {
     private Long userId;
     private Long questionId;
     private Date createdDate;
+    private String username;   // para capturar o nome do usuário
+    private Image file;
 
     // Getters e Setters
     public Long getId() {
@@ -40,6 +44,18 @@ public class AnswersDTO {
     }
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public Image getFile() {
+        return file;
+    }
+    public void setFile(Image file) {
+        this.file = file;
     }
 
 }
