@@ -137,4 +137,17 @@ public class QuestionsServiceImpl implements QuestionsService{
         return singleQuestionDto;
     }
 
+    @Override
+    public AllQuestionResponseDto getQuestionsByUserId(Long userId, int pageNumber) {
+        Pageable paging = PageRequest.of(pageNumber, SEARCH_RESULT_PER_PAGE);
+        Page<Questions> questionsPage = questionsRepository.findAllByUserId(userId, paging);
+        
+        AllQuestionResponseDto allQuestionResponseDto = new AllQuestionResponseDto();
+        allQuestionResponseDto.setQuestionsDtoList(questionsPage.getContent().stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
+        allQuestionResponseDto.setPageNumber(questionsPage.getPageable().getPageNumber());
+        allQuestionResponseDto.setTotalPages(questionsPage.getTotalPages());
+        
+        return allQuestionResponseDto;
+    }
+
 }

@@ -9,4 +9,5 @@ public interface QuestionsService {
     QuestionsDTO addQuestion(QuestionsDTO questionsDTO);
     AllQuestionResponseDto getAllQuestions(int pageNumber);
     SingleQuestionDto getQuestionById(Long questionId);
+    AllQuestionResponseDto getQuestionsByUserId(Long userId, int pageNumber);
 }
