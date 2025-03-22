@@ -15,5 +15,7 @@ public class QuestionsDTO {
     private Long userId;
     private Date createdDate;
     private String username;   // para capturar o nome do usuário
+    private Integer voteCount;
+    private int voted;         // 0 - não votou, 1 - votou positivo, -1 - votou negativo
 
 }

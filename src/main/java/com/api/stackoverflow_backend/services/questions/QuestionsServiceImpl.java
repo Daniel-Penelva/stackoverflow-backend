@@ -3,6 +3,7 @@ package com.api.stackoverflow_backend.services.questions;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -15,8 +16,10 @@ import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
 import com.api.stackoverflow_backend.entities.Answers;
+import com.api.stackoverflow_backend.entities.QuestionVote;
 import com.api.stackoverflow_backend.entities.Questions;
 import com.api.stackoverflow_backend.entities.User;
+import com.api.stackoverflow_backend.entities.VoteType;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
 import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 import com.api.stackoverflow_backend.repository.AnswersRepository;
@@ -89,7 +92,7 @@ public class QuestionsServiceImpl implements QuestionsService{
     }
 
     @Override
-    public SingleQuestionDto getQuestionById(Long questionId) {
+    public SingleQuestionDto getQuestionById(Long questionId, Long userId) {
 
     /*
         //O exemplo abaixo é uma forma de fazer a busca por ID, mas não é a melhor forma.
@@ -104,11 +107,14 @@ public class QuestionsServiceImpl implements QuestionsService{
         Questions question = questionsRepository.findById(questionId).orElseThrow(
             () -> new QuestionNotFoundException("Pergunta não encontrada para o ID: " + questionId));
 
-        return mapToSingleQuestionDto(question);
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new UserNotFoundException("Usuário não encontrado para o ID: " + userId));
+
+        return mapToSingleQuestionDto(question, user);
     }
 
     
-    private SingleQuestionDto mapToSingleQuestionDto(Questions question) {
+    private SingleQuestionDto mapToSingleQuestionDto(Questions question, User user) {
         
         QuestionsDTO questionsDTO = new QuestionsDTO();
         SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
@@ -120,10 +126,24 @@ public class QuestionsServiceImpl implements QuestionsService{
         questionsDTO.setCreatedDate(question.getCreatedDate());
         questionsDTO.setUserId(question.getUser().getId());
         questionsDTO.setUsername(question.getUser().getName());
+        questionsDTO.setVoteCount(question.getVoteCount()); // Adiciona a contagem de votos
 
-        singleQuestionDto.setQuestionsDTO(question.getQuestionDto());
+        singleQuestionDto.setQuestionsDTO(questionsDTO);
 
         List<AnswersDTO> answersDtoList = new ArrayList<>();
+
+        Questions existingQuestion = question;
+        Optional<QuestionVote> optionalQuestionVote = existingQuestion.getQuestionVoteList().stream().
+            filter(vote -> vote.getUser().getId().equals(user.getId())).findFirst();
+        questionsDTO.setVoted(0);
+        if (optionalQuestionVote.isPresent()) { 
+            if (optionalQuestionVote.get().getVoteType().equals(VoteType.UPVOTE)) {
+                questionsDTO.setVoted(1);
+            } else {
+                questionsDTO.setVoted(-1);
+            }
+        }
+
         List<Answers> answersList = answersRepository.findAllByQuestions_Id(question.getId());
         
         for(Answers answer : answersList) {

@@ -40,9 +40,9 @@ public class QuestionsController {
         return ResponseEntity.ok(allQuestionResponseDto);
     }
 
-    @GetMapping("/question/{questionId}")
-    public ResponseEntity<SingleQuestionDto> getQuestionById(@PathVariable Long questionId) {
-        SingleQuestionDto singleQuestionDto = questionsService.getQuestionById(questionId);
+    @GetMapping("/question/{questionId}/{userId}")
+    public ResponseEntity<SingleQuestionDto> getQuestionById(@PathVariable Long questionId, @PathVariable Long userId) {
+        SingleQuestionDto singleQuestionDto = questionsService.getQuestionById(questionId, userId);
         return ResponseEntity.ok(singleQuestionDto);
     }
 

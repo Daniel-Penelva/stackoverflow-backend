@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -54,6 +55,14 @@ public class Questions {
     @JsonIgnore
     private User user;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Integer voteCount = 0;
+
+    // Uma pergunta pode ter vários votos
+    @OneToMany(mappedBy = "questions", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<QuestionVote> questionVoteList;
+
     public QuestionsDTO getQuestionDto() {
         QuestionsDTO questionsDTO = new QuestionsDTO();
         questionsDTO.setId(id);
@@ -63,6 +72,7 @@ public class Questions {
         questionsDTO.setCreatedDate(createdDate);
         questionsDTO.setUserId(user.getId());
         questionsDTO.setUsername(user.getName());
+        questionsDTO.setVoteCount(voteCount);
 
         return questionsDTO;
     }
