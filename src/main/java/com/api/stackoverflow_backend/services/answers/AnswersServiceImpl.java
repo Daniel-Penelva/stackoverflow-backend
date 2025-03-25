@@ -1,7 +1,6 @@
 package com.api.stackoverflow_backend.services.answers;
 
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +8,7 @@ import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.api.stackoverflow_backend.entities.Answers;
 import com.api.stackoverflow_backend.entities.Questions;
 import com.api.stackoverflow_backend.entities.User;
+import com.api.stackoverflow_backend.exceptions.AnswersNotFoundException;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
 import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 import com.api.stackoverflow_backend.repository.AnswersRepository;
@@ -60,21 +60,21 @@ public class AnswersServiceImpl implements AnswersService {
         answersDTO.setCreatedDate(answer.getCreatedDate());
         answersDTO.setUserId(answer.getUser().getId());
         answersDTO.setQuestionId(answer.getQuestions().getId());
+        answersDTO.setApproved(answer.getApproved());
         return answersDTO;
     }
 
     @Override
     public AnswersDTO approveAnswer(Long answerId) {
-        Optional<Answers> optionalAnswer = answersRepository.findById(answerId);
-        if (optionalAnswer.isPresent()) {
-            Answers answers = optionalAnswer.get();
-            answers.setApproved(true);
-            Answers updateAnswer = answersRepository.save(answers);
-            AnswersDTO updatedAnswerDto = new AnswersDTO();
-            updatedAnswerDto.setId(updateAnswer.getId());
-            return updatedAnswerDto;
-        }
-        return null;
+
+        Answers answers = answersRepository.findById(answerId).orElseThrow(
+            () -> new AnswersNotFoundException("Resposta não encontrada para o ID: " + answerId));
+            
+        answers.setApproved(true);
+        Answers updateAnswer = answersRepository.save(answers);
+        AnswersDTO updatedAnswerDto = new AnswersDTO();
+        updatedAnswerDto.setId(updateAnswer.getId());
+        return updatedAnswerDto;
     }
 
 }

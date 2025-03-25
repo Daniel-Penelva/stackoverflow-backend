@@ -34,9 +34,6 @@ public class AnswersController {
     @GetMapping("/{answerId}")
     public ResponseEntity<AnswersDTO> approveAnswer(@PathVariable Long answerId) {
         AnswersDTO approvedAnswerDto = answersService.approveAnswer(answerId);
-        if (approvedAnswerDto == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(approvedAnswerDto);
     }
 }

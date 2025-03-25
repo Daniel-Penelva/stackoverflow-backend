@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.api.stackoverflow_backend.exceptions.AnswersNotFoundException;
 import com.api.stackoverflow_backend.exceptions.EmailAlreadyExistsException;
 import com.api.stackoverflow_backend.exceptions.ImageUploadException;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
@@ -20,6 +21,11 @@ import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AnswersNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleAnswersNotFoundException(AnswersNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", ex.getMessage()));
+    }
 
     @ExceptionHandler(ImageUploadException.class)
     public ResponseEntity<Map<String, String>> handleImageUploadException(ImageUploadException ex) {
