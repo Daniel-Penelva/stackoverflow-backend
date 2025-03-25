@@ -1,6 +1,7 @@
 package com.api.stackoverflow_backend.services.answers;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -60,6 +61,20 @@ public class AnswersServiceImpl implements AnswersService {
         answersDTO.setUserId(answer.getUser().getId());
         answersDTO.setQuestionId(answer.getQuestions().getId());
         return answersDTO;
+    }
+
+    @Override
+    public AnswersDTO approveAnswer(Long answerId) {
+        Optional<Answers> optionalAnswer = answersRepository.findById(answerId);
+        if (optionalAnswer.isPresent()) {
+            Answers answers = optionalAnswer.get();
+            answers.setApproved(true);
+            Answers updateAnswer = answersRepository.save(answers);
+            AnswersDTO updatedAnswerDto = new AnswersDTO();
+            updatedAnswerDto.setId(updateAnswer.getId());
+            return updatedAnswerDto;
+        }
+        return null;
     }
 
 }

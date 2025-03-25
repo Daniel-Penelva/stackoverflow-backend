@@ -48,6 +48,8 @@ public class Answers {
     @JsonIgnore
     private Questions questions;
 
+    private boolean approved = false;
+
     // Getters e Setters
     public Long getId() {
         return id;
@@ -87,6 +89,14 @@ public class Answers {
 
     public void setQuestions(Questions questions) {
         this.questions = questions;
+    }
+
+    public boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 
     public AnswersDTO getAnswersDto() {

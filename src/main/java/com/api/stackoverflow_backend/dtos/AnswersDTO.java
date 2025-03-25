@@ -13,6 +13,7 @@ public class AnswersDTO {
     private Date createdDate;
     private String username;   // para capturar o nome do usuário
     private Image file;
+    private boolean approved;
 
     // Getters e Setters
     public Long getId() {
@@ -56,6 +57,12 @@ public class AnswersDTO {
     }
     public void setFile(Image file) {
         this.file = file;
+    }
+    public boolean getApproved() {
+        return approved;
+    }
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 
 }
