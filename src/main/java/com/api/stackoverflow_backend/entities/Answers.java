@@ -105,6 +105,7 @@ public class Answers {
         answersDTO.setBody(body);
         answersDTO.setUserId(user.getId());
         answersDTO.setQuestionId(questions.getId());
+        answersDTO.setApproved(approved);
         answersDTO.setCreatedDate(createdDate);
         answersDTO.setUsername(user.getName());
 

@@ -17,5 +17,6 @@ public class QuestionsDTO {
     private String username;   // para capturar o nome do usuário
     private Integer voteCount;
     private int voted;         // 0 - não votou, 1 - votou positivo, -1 - votou negativo
+    private boolean hasApprovedAnswer = false; // se a pergunta tem uma resposta aprovada
 
 }

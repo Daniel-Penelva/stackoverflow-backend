@@ -147,6 +147,11 @@ public class QuestionsServiceImpl implements QuestionsService{
         List<Answers> answersList = answersRepository.findAllByQuestions_Id(question.getId());
         
         for(Answers answer : answersList) {
+
+            if (answer.getApproved()) {
+                singleQuestionDto.getQuestionsDTO().setHasApprovedAnswer(true);
+            }
+
             AnswersDTO answersDTO = answer.getAnswersDto();
             answersDTO.setFile(imageRepository.findByAnswer(answer));
             answersDtoList.add(answersDTO);
