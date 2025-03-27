@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.api.stackoverflow_backend.dtos.AnswerVoteDto;
 import com.api.stackoverflow_backend.dtos.QuestionVoteDto;
 import com.api.stackoverflow_backend.services.vote.VoteService;
 
@@ -24,6 +25,18 @@ public class VoteController {
         try {
             QuestionVoteDto questionVotedDto = voteService.addVoteToQuestion(questionVoteDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(questionVotedDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno do servidor");
+        }
+    }
+
+    @PostMapping("/answer-vote")
+    public ResponseEntity<?> addVoteToAnswer(@RequestBody AnswerVoteDto answerVoteDto) {
+        try {
+            AnswerVoteDto createdAnswerVotedDto = voteService.addVoteToAnswer(answerVoteDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdAnswerVotedDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

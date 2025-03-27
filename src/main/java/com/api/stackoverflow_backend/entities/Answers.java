@@ -1,6 +1,7 @@
 package com.api.stackoverflow_backend.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -49,6 +52,14 @@ public class Answers {
     private Questions questions;
 
     private boolean approved = false;
+
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Integer voteCount = 0;
+
+    @OneToMany(mappedBy = "answers", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AnswerVote> answerVotes;
+
 
     // Getters e Setters
     public Long getId() {
@@ -97,6 +108,22 @@ public class Answers {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public List<AnswerVote> getAnswerVotes() {
+        return answerVotes;
+    }
+
+    public void setAnswerVotes(List<AnswerVote> answerVotes) {
+        this.answerVotes = answerVotes;
     }
 
     public AnswersDTO getAnswersDto() {
