@@ -14,6 +14,8 @@ public class AnswersDTO {
     private String username;   // para capturar o nome do usuário
     private Image file;
     private boolean approved;
+    private Integer voteCount;
+    private int voted;        // 0 = não votou, 1 = votou positivo, -1 = votou negativo
 
     // Getters e Setters
     public Long getId() {
@@ -63,6 +65,19 @@ public class AnswersDTO {
     }
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+    
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+    public int getVoted() {
+        return voted;
+    }
+    public void setVoted(int voted) {
+        this.voted = voted;
     }
 
 }

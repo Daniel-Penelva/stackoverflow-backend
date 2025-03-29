@@ -58,7 +58,7 @@ public class Answers {
 
     @OneToMany(mappedBy = "answers", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<AnswerVote> answerVotes;
+    private List<AnswerVote> answerVotesList;
 
 
     // Getters e Setters
@@ -118,12 +118,12 @@ public class Answers {
         this.voteCount = voteCount;
     }
 
-    public List<AnswerVote> getAnswerVotes() {
-        return answerVotes;
+    public List<AnswerVote> getAnswerVotesList() {
+        return answerVotesList;
     }
 
-    public void setAnswerVotes(List<AnswerVote> answerVotes) {
-        this.answerVotes = answerVotes;
+    public void setAnswerVotesList(List<AnswerVote> answerVotesList) {
+        this.answerVotesList = answerVotesList;
     }
 
     public AnswersDTO getAnswersDto() {
@@ -135,6 +135,7 @@ public class Answers {
         answersDTO.setApproved(approved);
         answersDTO.setCreatedDate(createdDate);
         answersDTO.setUsername(user.getName());
+        answersDTO.setVoteCount(voteCount);
 
         return answersDTO;
     }

@@ -15,6 +15,7 @@ import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
 import com.api.stackoverflow_backend.dtos.AnswersDTO;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
+import com.api.stackoverflow_backend.entities.AnswerVote;
 import com.api.stackoverflow_backend.entities.Answers;
 import com.api.stackoverflow_backend.entities.QuestionVote;
 import com.api.stackoverflow_backend.entities.Questions;
@@ -153,6 +154,18 @@ public class QuestionsServiceImpl implements QuestionsService{
             }
 
             AnswersDTO answersDTO = answer.getAnswersDto();
+            answersDTO.setId(answer.getId());
+            Optional<AnswerVote> optionalAnswerVote = answer.getAnswerVotesList().stream().filter(
+                answervote -> answervote.getUser().getId().equals(user.getId())).findFirst();
+            answersDTO.setVoted(0);
+            if (optionalAnswerVote.isPresent()) {
+                if (optionalAnswerVote.get().getVoteType().equals(VoteType.UPVOTE)) {
+                    answersDTO.setVoted(1);
+                } else {
+                    answersDTO.setVoted(-1);
+                }
+            }
+
             answersDTO.setFile(imageRepository.findByAnswer(answer));
             answersDtoList.add(answersDTO);
         }
