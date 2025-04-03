@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
+import com.api.stackoverflow_backend.dtos.QuestionSearchResponseDto;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
 import com.api.stackoverflow_backend.services.questions.QuestionsService;
@@ -50,6 +51,15 @@ public class QuestionsController {
     public ResponseEntity<AllQuestionResponseDto> getQuestionsByUserId(@PathVariable Long userId, @PathVariable int pageNumber) {
         AllQuestionResponseDto allQuestionResponseDto = questionsService.getQuestionsByUserId(userId, pageNumber);
         return ResponseEntity.ok(allQuestionResponseDto);
+    }
+
+    @GetMapping("/search/{title}/{pageNumber}")
+    public ResponseEntity<?> searchQuestionByTitle(@PathVariable String title, @PathVariable  int pageNumber) {
+        QuestionSearchResponseDto questionSearchResponseDto = questionsService.searchQuestionByTitle(title, pageNumber);
+        if (questionSearchResponseDto == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(questionSearchResponseDto);
     }
 
 }

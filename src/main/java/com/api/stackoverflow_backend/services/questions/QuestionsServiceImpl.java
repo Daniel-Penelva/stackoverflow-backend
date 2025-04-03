@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
 import com.api.stackoverflow_backend.dtos.AnswersDTO;
+import com.api.stackoverflow_backend.dtos.QuestionSearchResponseDto;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
 import com.api.stackoverflow_backend.entities.AnswerVote;
@@ -29,7 +30,7 @@ import com.api.stackoverflow_backend.repository.QuestionsRepository;
 import com.api.stackoverflow_backend.repository.UserRepository;
 
 @Service
-public class QuestionsServiceImpl implements QuestionsService{
+public class QuestionsServiceImpl implements QuestionsService {
 
     private final UserRepository userRepository;
     private final QuestionsRepository questionsRepository;
@@ -38,8 +39,9 @@ public class QuestionsServiceImpl implements QuestionsService{
 
     public static final int SEARCH_RESULT_PER_PAGE = 5;
 
-    //Construtor com injeção de dependência
-    public QuestionsServiceImpl(UserRepository userRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository, ImageRepository imageRepository) {
+    // Construtor com injeção de dependência
+    public QuestionsServiceImpl(UserRepository userRepository, QuestionsRepository questionsRepository,
+            AnswersRepository answersRepository, ImageRepository imageRepository) {
         this.userRepository = userRepository;
         this.questionsRepository = questionsRepository;
         this.answersRepository = answersRepository;
@@ -51,7 +53,7 @@ public class QuestionsServiceImpl implements QuestionsService{
 
         // Buscar o usuário ou lança exceção
         User user = userRepository.findById(questionsDTO.getUserId()).orElseThrow(
-            () -> new UserNotFoundException("Usuário não encontrado para o ID: " + questionsDTO.getUserId()));
+                () -> new UserNotFoundException("Usuário não encontrado para o ID: " + questionsDTO.getUserId()));
 
         // Cria a entidade
         Questions question = new Questions();
@@ -66,7 +68,7 @@ public class QuestionsServiceImpl implements QuestionsService{
         return mapToDTO(createdQuestions);
     }
 
-    // Mapper - método para converter em DTO 
+    // Mapper - método para converter em DTO
     private QuestionsDTO mapToDTO(Questions question) {
         QuestionsDTO questionsDTO = new QuestionsDTO();
         questionsDTO.setId(question.getId());
@@ -83,40 +85,40 @@ public class QuestionsServiceImpl implements QuestionsService{
     public AllQuestionResponseDto getAllQuestions(int pageNumber) {
         Pageable paging = PageRequest.of(pageNumber, SEARCH_RESULT_PER_PAGE);
         Page<Questions> questionsPage = questionsRepository.findAll(paging);
-        
+
         AllQuestionResponseDto allQuestionResponseDto = new AllQuestionResponseDto();
-        allQuestionResponseDto.setQuestionsDtoList(questionsPage.getContent().stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
+        allQuestionResponseDto.setQuestionsDtoList(
+                questionsPage.getContent().stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
         allQuestionResponseDto.setPageNumber(questionsPage.getPageable().getPageNumber());
         allQuestionResponseDto.setTotalPages(questionsPage.getTotalPages());
-        
+
         return allQuestionResponseDto;
     }
 
     @Override
     public SingleQuestionDto getQuestionById(Long questionId, Long userId) {
 
-    /*
-        //O exemplo abaixo é uma forma de fazer a busca por ID, mas não é a melhor forma.
-        Optional<Questions> optionalQuestion = questionsRepository.findById(questionId);
-        
-        SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
-        optionalQuestion.ifPresent(question -> singleQuestionDto.setQuestionsDTO(question.getQuestionDto()));
-
-        return singleQuestionDto; 
-    */
+        /*
+         * //O exemplo abaixo é uma forma de fazer a busca por ID, mas não é a melhor forma.
+         * 
+         * Optional<Questions> optionalQuestion = questionsRepository.findById(questionId);
+         * 
+         * SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
+         * optionalQuestion.ifPresent(question -> singleQuestionDto.setQuestionsDTO(question.getQuestionDto()));
+         * return singleQuestionDto;
+         */
 
         Questions question = questionsRepository.findById(questionId).orElseThrow(
-            () -> new QuestionNotFoundException("Pergunta não encontrada para o ID: " + questionId));
+                () -> new QuestionNotFoundException("Pergunta não encontrada para o ID: " + questionId));
 
         User user = userRepository.findById(userId).orElseThrow(
-            () -> new UserNotFoundException("Usuário não encontrado para o ID: " + userId));
+                () -> new UserNotFoundException("Usuário não encontrado para o ID: " + userId));
 
         return mapToSingleQuestionDto(question, user);
     }
 
-    
     private SingleQuestionDto mapToSingleQuestionDto(Questions question, User user) {
-        
+
         QuestionsDTO questionsDTO = new QuestionsDTO();
         SingleQuestionDto singleQuestionDto = new SingleQuestionDto();
 
@@ -134,10 +136,10 @@ public class QuestionsServiceImpl implements QuestionsService{
         List<AnswersDTO> answersDtoList = new ArrayList<>();
 
         Questions existingQuestion = question;
-        Optional<QuestionVote> optionalQuestionVote = existingQuestion.getQuestionVoteList().stream().
-            filter(vote -> vote.getUser().getId().equals(user.getId())).findFirst();
+        Optional<QuestionVote> optionalQuestionVote = existingQuestion.getQuestionVoteList().stream()
+                .filter(vote -> vote.getUser().getId().equals(user.getId())).findFirst();
         questionsDTO.setVoted(0);
-        if (optionalQuestionVote.isPresent()) { 
+        if (optionalQuestionVote.isPresent()) {
             if (optionalQuestionVote.get().getVoteType().equals(VoteType.UPVOTE)) {
                 questionsDTO.setVoted(1);
             } else {
@@ -146,8 +148,8 @@ public class QuestionsServiceImpl implements QuestionsService{
         }
 
         List<Answers> answersList = answersRepository.findAllByQuestions_Id(question.getId());
-        
-        for(Answers answer : answersList) {
+
+        for (Answers answer : answersList) {
 
             if (answer.getApproved()) {
                 singleQuestionDto.getQuestionsDTO().setHasApprovedAnswer(true);
@@ -156,7 +158,7 @@ public class QuestionsServiceImpl implements QuestionsService{
             AnswersDTO answersDTO = answer.getAnswersDto();
             answersDTO.setId(answer.getId());
             Optional<AnswerVote> optionalAnswerVote = answer.getAnswerVotesList().stream().filter(
-                answervote -> answervote.getUser().getId().equals(user.getId())).findFirst();
+                    answervote -> answervote.getUser().getId().equals(user.getId())).findFirst();
             answersDTO.setVoted(0);
             if (optionalAnswerVote.isPresent()) {
                 if (optionalAnswerVote.get().getVoteType().equals(VoteType.UPVOTE)) {
@@ -179,13 +181,30 @@ public class QuestionsServiceImpl implements QuestionsService{
     public AllQuestionResponseDto getQuestionsByUserId(Long userId, int pageNumber) {
         Pageable paging = PageRequest.of(pageNumber, SEARCH_RESULT_PER_PAGE);
         Page<Questions> questionsPage = questionsRepository.findAllByUserId(userId, paging);
-        
+
         AllQuestionResponseDto allQuestionResponseDto = new AllQuestionResponseDto();
-        allQuestionResponseDto.setQuestionsDtoList(questionsPage.getContent().stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
+        allQuestionResponseDto.setQuestionsDtoList(
+                questionsPage.getContent().stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
         allQuestionResponseDto.setPageNumber(questionsPage.getPageable().getPageNumber());
         allQuestionResponseDto.setTotalPages(questionsPage.getTotalPages());
-        
+
         return allQuestionResponseDto;
     }
 
+    @Override
+    public QuestionSearchResponseDto searchQuestionByTitle(String title, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, SEARCH_RESULT_PER_PAGE);
+        Page<Questions> questionPage;
+        if (title == null || title.isEmpty() || title.equals("null"))
+            questionPage = questionsRepository.findAll(pageable);
+        else
+            questionPage = questionsRepository.findAllByTitleContaining(title, pageable);
+        QuestionSearchResponseDto questionSearchResponseDto = new QuestionSearchResponseDto();
+        questionSearchResponseDto
+                .setQuestionsDtoList(questionPage.stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
+        questionSearchResponseDto.setPageNumber(questionPage.getPageable().getPageNumber());
+        questionSearchResponseDto.setTotalPages(questionPage.getTotalPages());
+
+        return questionSearchResponseDto;
+    }
 }
