@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.stackoverflow_backend.dtos.AnswersDTO;
+import com.api.stackoverflow_backend.dtos.CommentDto;
 import com.api.stackoverflow_backend.services.answers.AnswersService;
 
 import jakarta.validation.Valid;
@@ -35,5 +36,11 @@ public class AnswersController {
     public ResponseEntity<AnswersDTO> approveAnswer(@PathVariable Long answerId) {
         AnswersDTO approvedAnswerDto = answersService.approveAnswer(answerId);
         return ResponseEntity.ok(approvedAnswerDto);
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<CommentDto> postCommentToAnswer(@Valid @RequestBody CommentDto commentDto) {
+        CommentDto postedCommentDto = answersService.postCommentToAnswer(commentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(postedCommentDto);
     }
 }

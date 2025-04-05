@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.api.stackoverflow_backend.exceptions.AnswersNotFoundException;
+import com.api.stackoverflow_backend.exceptions.CommentNotFoundException;
 import com.api.stackoverflow_backend.exceptions.EmailAlreadyExistsException;
 import com.api.stackoverflow_backend.exceptions.ImageUploadException;
 import com.api.stackoverflow_backend.exceptions.QuestionNotFoundException;
@@ -21,6 +22,17 @@ import com.api.stackoverflow_backend.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    // Tratamento de exceções personalizadas
+
+    // Outra forma de fazer isso é criar um Map<String, String> e adicionar a mensagem de erro
+    // e o status HTTP, mas isso pode ser mais verboso.
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCommentNotFoundException(CommentNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 
     @ExceptionHandler(AnswersNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleAnswersNotFoundException(AnswersNotFoundException ex) {
