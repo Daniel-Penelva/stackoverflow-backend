@@ -12,5 +12,6 @@ public class CommentDto {
     private Date createdDate;
     private Long answersId;
     private Long userId;
+    private String username; // para capturar o nome do usuário
 
 }

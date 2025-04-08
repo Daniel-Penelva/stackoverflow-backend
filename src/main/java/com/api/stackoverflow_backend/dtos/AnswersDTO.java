@@ -1,6 +1,7 @@
 package com.api.stackoverflow_backend.dtos;
 
 import java.util.Date;
+import java.util.List;
 
 import com.api.stackoverflow_backend.entities.Image;
 
@@ -16,6 +17,7 @@ public class AnswersDTO {
     private boolean approved;
     private Integer voteCount;
     private int voted;        // 0 = não votou, 1 = votou positivo, -1 = votou negativo
+    private List<CommentDto> commentDtoList; // lista de comentários da resposta
 
     // Getters e Setters
     public Long getId() {
@@ -78,6 +80,12 @@ public class AnswersDTO {
     }
     public void setVoted(int voted) {
         this.voted = voted;
+    }
+    public List<CommentDto> getCommentDtoList() {
+        return commentDtoList;
+    }
+    public void setCommentDtoList(List<CommentDto> commentDtoList) {
+        this.commentDtoList = commentDtoList;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.api.stackoverflow_backend.dtos.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -50,5 +51,16 @@ public class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User user;
+
+    public CommentDto getCommentDto() {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(id);
+        commentDto.setBody(body);
+        commentDto.setCreatedDate(createdDate);
+        commentDto.setAnswersId(answers.getId());
+        commentDto.setUserId(user.getId());
+        commentDto.setUsername(user.getName()); // Captura o nome do usuário
+        return commentDto;
+    }
 
 }

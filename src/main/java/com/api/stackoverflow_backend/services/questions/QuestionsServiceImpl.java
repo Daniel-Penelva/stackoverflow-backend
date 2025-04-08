@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.stackoverflow_backend.dtos.AllQuestionResponseDto;
 import com.api.stackoverflow_backend.dtos.AnswersDTO;
+import com.api.stackoverflow_backend.dtos.CommentDto;
 import com.api.stackoverflow_backend.dtos.QuestionSearchResponseDto;
 import com.api.stackoverflow_backend.dtos.QuestionsDTO;
 import com.api.stackoverflow_backend.dtos.SingleQuestionDto;
@@ -170,6 +171,14 @@ public class QuestionsServiceImpl implements QuestionsService {
 
             answersDTO.setFile(imageRepository.findByAnswer(answer));
             answersDtoList.add(answersDTO);
+
+            // Adiciona os comentários à resposta
+            List<CommentDto> commentDtoList = new ArrayList<>();
+            answer.getCommentList().forEach(comment -> {
+                CommentDto commentDto = comment.getCommentDto();
+                commentDtoList.add(commentDto);
+            });
+            answersDTO.setCommentDtoList(commentDtoList);
         }
 
         singleQuestionDto.setAnswersDTOList(answersDtoList);

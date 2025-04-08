@@ -60,6 +60,11 @@ public class Answers {
     @JsonIgnore
     private List<AnswerVote> answerVotesList;
 
+    // Um comentário pode ter muitos respostas
+    @OneToMany(mappedBy = "answers", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment> commentList; // lista de comentários da resposta
+
 
     // Getters e Setters
     public Long getId() {
@@ -126,6 +131,14 @@ public class Answers {
         this.answerVotesList = answerVotesList;
     }
 
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+    
     public AnswersDTO getAnswersDto() {
         AnswersDTO answersDTO = new AnswersDTO();
         answersDTO.setId(id);
