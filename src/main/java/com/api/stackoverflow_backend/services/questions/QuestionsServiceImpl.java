@@ -216,4 +216,17 @@ public class QuestionsServiceImpl implements QuestionsService {
 
         return questionSearchResponseDto;
     }
+
+    @Override
+    public QuestionSearchResponseDto getLatestQuestion(int pageNum) {
+        
+        Pageable pageable = PageRequest.of(pageNum, SEARCH_RESULT_PER_PAGE);
+        Page<Questions> questionPage = questionsRepository.findAllByOrderByCreatedDateDesc(pageable);
+        
+        QuestionSearchResponseDto questionSearchResponseDto = new QuestionSearchResponseDto();
+        questionSearchResponseDto.setQuestionsDtoList(questionPage.stream().map(Questions::getQuestionDto).collect(Collectors.toList()));
+        questionSearchResponseDto.setTotalPages(questionPage.getTotalPages());
+        questionSearchResponseDto.setPageNumber(questionPage.getPageable().getPageNumber());
+        return questionSearchResponseDto;
+    }
 }
