@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class SimpleCorsFilter implements Filter {
 
     // private final String clientAppUrl = "http://localhost:4200/*";
-    private final String clientAppUrl = "https://idyllic-tapioca-7aafcf.netlify.app/";
+    private final String clientAppUrl = "https://glittery-taiyaki-6135e1.netlify.app/";
     
     // Construtor SimpleCorsFilter
     public SimpleCorsFilter(){
