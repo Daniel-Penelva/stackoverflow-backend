@@ -21,7 +21,8 @@ import java.util.HashMap;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class SimpleCorsFilter implements Filter {
 
-    private final String clientAppUrl = "http://localhost:4200/*";
+    // private final String clientAppUrl = "http://localhost:4200/*";
+    private final String clientAppUrl = "https://idyllic-tapioca-7aafcf.netlify.app/";
     
     // Construtor SimpleCorsFilter
     public SimpleCorsFilter(){
